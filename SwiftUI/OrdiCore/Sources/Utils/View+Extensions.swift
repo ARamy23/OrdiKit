@@ -30,4 +30,18 @@ public extension View {
     return (UIApplication.shared.connectedScenes.first as? UIWindowScene)?
       .windows.first?.safeAreaInsets ?? .zero
   }
+  
+  @ViewBuilder func `if`<Content: View>(_ condition: Bool, transform: (Self) -> Content) -> some View {
+    if condition {
+      transform(self)
+    } else {
+      self
+    }
+  }
+    
+    @ViewBuilder
+    func stay(_ scheme: ColorScheme) -> some View {
+        self.environment(\.colorScheme, scheme)
+    }
+  
 }

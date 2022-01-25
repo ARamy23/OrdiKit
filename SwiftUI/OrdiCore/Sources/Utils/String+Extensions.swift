@@ -23,20 +23,6 @@ public extension String {
   }
 }
 
-public extension String {
-  /// SwifterSwift: Returns a localized string, with an optional comment for translators.
-  ///
-  ///        "Hello world".localized -> Hallo Welt
-  ///
-  var localized: String {
-    return NSLocalizedString(self, tableName: "Localizables", bundle: .main, comment: "")
-  }
-  
-  func localized(arguments: CVarArg...) -> String {
-    return String(format: self.localized, arguments: arguments)
-  }
-}
-
 public extension Optional where Wrapped == String {
   var emptyIfNil: String {
     return self ?? .empty

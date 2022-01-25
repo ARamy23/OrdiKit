@@ -349,7 +349,13 @@ public final class FontManager {
     weight: FontWeight
   ) -> ARFont {
     guard let suitableFont = configuration.availableFonts
-            .first(where: { $0.fontLocale == configuration.fontsLocale && $0.fontType == configuration.fontsType })
+            .first(
+                where: {
+                    $0.fontLocale == configuration.fontsLocale &&
+                    $0.fontLocale == configuration.fontsLocale &&
+                    $0.fontType == configuration.fontsType
+                }
+            )
     else { fatalError("Can't find a suitable font to set") }
     
     return ARFont(fontDetails: suitableFont, fontCategory: category, fontScale: scale, fontWeight: weight)

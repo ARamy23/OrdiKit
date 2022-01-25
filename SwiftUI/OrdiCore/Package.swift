@@ -15,7 +15,9 @@ let package = Package(
     .library(name: "Utils", targets: ["Utils"]),
     .library(name: "Business", targets: ["Business"]),
     .library(name: "OrdiLogging", targets: ["OrdiLogging"]),
-    .library(name: "Entity", targets: ["Entity"])
+    .library(name: "Entity", targets: ["Entity"]),
+    .library(name: "PreviewableView", targets: ["PreviewableView"]),
+    .library(name: "Animations", targets: ["Animations"])
   ],
   dependencies: [
     .package(
@@ -42,6 +44,11 @@ let package = Package(
         name: "KeychainSwift",
         url: "https://github.com/evgenyneu/keychain-swift",
         .upToNextMajor(from: .init(20, 0, 0))
+    ),
+    .package(
+        name: "Lottie",
+        url: "https://github.com/airbnb/lottie-ios",
+        .upToNextMajor(from: .init(3, 3, 0))
     )
   ],
   targets: [
@@ -52,7 +59,9 @@ let package = Package(
         "ReusableUI",
         "Utils",
         "Business",
-        "OrdiLogging"
+        "OrdiLogging",
+        "PreviewableView",
+        "Animations"
       ]
     ),
     .target(
@@ -98,5 +107,12 @@ let package = Package(
             .product(name: "KeychainSwift", package: "KeychainSwift")
         ]
     ),
+    .target(name: "PreviewableView"),
+    .target(
+        name: "Animations",
+        dependencies: [
+            .product(name: "Lottie", package: "Lottie")
+        ]
+    )
   ]
 )
