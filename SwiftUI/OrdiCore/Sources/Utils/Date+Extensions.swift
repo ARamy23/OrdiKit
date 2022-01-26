@@ -54,7 +54,7 @@ public extension Date {
   /// SwifterSwift: User’s current calendar.
   var calendar: Calendar {
     // Workaround to segfault on corelibs foundation https://bugs.swift.org/browse/SR-10147
-    return Calendar(identifier: Calendar.current.identifier)
+    return Calendar(identifier: .islamic)
   }
   
   /// SwifterSwift: Era.
@@ -809,6 +809,7 @@ public extension Date {
   func dayName(ofStyle style: DayNameStyle = .full) -> String {
     // http://www.codingexplorer.com/swiftly-getting-human-readable-date-nsdateformatter/
     let dateFormatter = DateFormatter()
+    dateFormatter.calendar = calendar
     var format: String {
       switch style {
       case .oneLetter:
@@ -834,6 +835,7 @@ public extension Date {
   func monthName(ofStyle style: MonthNameStyle = .full) -> String {
     // http://www.codingexplorer.com/swiftly-getting-human-readable-date-nsdateformatter/
     let dateFormatter = DateFormatter()
+    dateFormatter.calendar = calendar
     var format: String {
       switch style {
       case .oneLetter:
