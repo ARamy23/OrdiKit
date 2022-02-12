@@ -14,17 +14,17 @@ final class UserDefaultsStorage {
 }
 
 extension UserDefaultsStorage: WritableStorage {
-  func save<T>(value: T, for key: StorageKey) throws where T : Cachable {
+  func save<T>(value: T, for key: StorageKey) throws where T : Codable {
       defaults.set(value.encode(), forKey: key.key)
   }
   
-  func remove<T>(type: T.Type, for key: StorageKey) throws where T : Cachable {
+  func remove<T>(type: T.Type, for key: StorageKey) throws where T : Codable {
     defaults.removeObject(forKey: key.key)
   }
 }
 
 extension UserDefaultsStorage: ReadableStorage {
-  func fetchValue<T>(for key: StorageKey) -> T? where T : Cachable {
+  func fetchValue<T>(for key: StorageKey) -> T? where T : Codable {
     defaults.data(forKey: key.key)?.decode(T.self)
   }
 }

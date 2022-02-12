@@ -25,3 +25,17 @@ public extension Array where Element: Identifiable {
     removeAll(where: { $0.id == target.id })
   }
 }
+
+public extension Array {
+    func appending(_ elements: Element) -> Self {
+        var current = self
+        current.append(elements)
+        return current
+    }
+    
+    func appending(elements: [Element]) -> Self {
+        var current = self
+        current.append(contentsOf: elements)
+        return current
+    }
+}

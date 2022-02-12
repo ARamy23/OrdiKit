@@ -10,7 +10,7 @@ import Foundation
 import Entity
 
 public final class CacheManager {
-  enum SupportedStorage {
+  public enum SupportedStorage {
     case userDefaults
     case encrypted
     case disk
@@ -22,7 +22,7 @@ public final class CacheManager {
   private lazy var diskStorage = DiskStorage()
   private lazy var userDefaultsStorage = UserDefaultsStorage()
   
-  init(
+  public init(
     decoder: JSONDecoder = .init(),
     encoder: JSONEncoder = .init()
   ) {
@@ -30,16 +30,16 @@ public final class CacheManager {
     self.encoder = encoder
   }
   
-  func fetch<T: Cachable>(_ type: T.Type, for key: StorageKey) -> T? {
+  public func fetch<T: Codable>(_ type: T.Type, for key: StorageKey) -> T? {
     return getSuitableStorage(from: key.suitableStorage).fetchValue(for: key)
   }
   
-  func save<T: Cachable>(_ value: T, for key: StorageKey) throws {
-    try getSuitableStorage(from: key.suitableStorage).save(value: value, for: key)
+  public func save<T: Codable>(_ value: T, for key: StorageKey) {
+    try? getSuitableStorage(from: key.suitableStorage).save(value: value, for: key)
   }
   
-  func remove<T: Cachable>(type: T.Type, for key: StorageKey) throws {
-    try getSuitableStorage(from: key.suitableStorage).remove(type: type, for: key)
+  public func remove<T: Codable>(type: T.Type, for key: StorageKey) {
+    try? getSuitableStorage(from: key.suitableStorage).remove(type: type, for: key)
   }
 }
 

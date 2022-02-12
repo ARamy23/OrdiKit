@@ -1039,4 +1039,207 @@ public extension Date {
   }
 }
 
+public extension Date {
+  func startOfMonth(using calendar: Calendar) -> Date {
+    calendar.date(
+      from: calendar.dateComponents([.year, .month], from: self)
+    ) ?? self
+  }
+}
+
+public extension DateFormatter {
+  convenience init(dateFormat: String, calendar: Calendar) {
+    self.init()
+    self.dateFormat = dateFormat
+    self.calendar = calendar
+  }
+}
+
+public extension Date {
+  // MARK: - Helper types
+  enum Format: String, CaseIterable {
+    /// example: 18/10/1993
+    case ddMMyyyySlashed = "dd/MM/yyyy"
+    /// example: 18/10/1993
+    case mmDDyyyySlashed = "MM/dd/yyyy"
+    /// "18-10-1993"
+    case ddMMyyyyDashed = "dd-MM-yyyy"
+    /// "1993-10-18"
+    case yyyyMMddDashed = "yyyy-MM-dd"
+    /// 2020-09-17 07:41:51 +0000
+    case isoMilliSecondsFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+    /// 17.09.2020
+    case ddMMyyyyDotted = "dd.MM.yyyy"
+    /// 2021-03-22T04:08:00Z
+    case isoFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+    /// 17 September 2020 - 09:41
+    case ddMMyyyyHHmm = "dd MMMM yyyy - hh:mm"
+    /// 17 September 2020 - 09:41 AM
+    case ddMMyyyyHHmma = "dd MMMM yyyy - hh:mm a"
+    /// 09:59 PM
+    case hhmmA = "hh:mm a"
+    /// 9:59 PM
+    case hmmA = "h:mm a"
+    /// 59:31
+    case mmss = "mm:ss"
+    /// 13:59:31
+    case HHmmss = "HH:mm:ss"
+    /// 2012-09-21 13:59:31
+    case yyyyMMddHHmmSS = "yyyy-MM-dd HH:mm:ss"
+    /// 2021-03-09T14:27:21Z
+    case isoMilliSecondsFormatV2 = "yyyy-MM-dd'T'HH:mm:ssZZZ"
+  }
+  
+  enum Components: String {
+    /// 1997
+    case yearFull = "yyyy"
+    /// 97 (1997)
+    case yearShort = "yy"
+    
+    /// 7
+    case monthDigit = "M"
+    /// 07
+    case monthDigitPadded = "MM"
+    /// Jul
+    case monthShort = "MMM"
+    /// July
+    case monthFull = "MMMM"
+    /// J (July)
+    case monthLetter = "MMMMM"
+    
+    /// 5
+    case dayOfMonth = "d"
+    
+    /// Sat
+    case weekdayShort = "EEE"
+    /// Saturday
+    case weekdayFull = "EEEE"
+    /// S (Saturday)
+    case weekdayLetter = "EEEEE"
+    
+    /// Localized **13** or **1 PM**, depending on the locale.
+    case hour = "j"
+    /// 20
+    case minute = "m"
+    /// 08
+    case second = "ss"
+    
+    /// CST
+    case timeZone = "zzz"
+    /// **Central Standard Time** or **CST-06:00** or if full name is unavailable.
+    case timeZoneFull = "zzzz"
+  }
+  
+  // MARK: - Date Formatting
+  
+  func format(
+    with components: [Components],
+    in timeZone: TimeZone? = .current,
+    using dateFormatter: DateFormatter = DateFormatter(),
+    locale: Locale = .current) -> String? {
+      let template = components.map(\.rawValue).joined(separator: " ")
+      
+      guard let localizedFormat = DateFormatter.dateFormat(fromTemplate: template, options: 0, locale: locale) else {
+        return nil
+      }
+      
+      dateFormatter.timeZone = timeZone
+      dateFormatter.dateFormat = localizedFormat
+      
+      return dateFormatter.string(from: self)
+    }
+}
+
+public class DatePresenter { }
+
+public extension DatePresenter {
+  func present(usingString date: String) -> DateStringInput {
+    DateStringInput(date: date)
+  }
+  
+  func present(usingDate date: Date) -> DateStringOutput {
+    DateStringOutput(date: date)
+  }
+}
+
+public protocol DateFormatterBuilderProtocol: AnyObject {
+  associatedtype Builder
+  var formatter: DateFormatter { get }
+}
+
+public protocol SelfAdaptingDateFormatterBuilderProtocol: DateFormatterBuilderProtocol where Builder == Self { }
+
+public extension SelfAdaptingDateFormatterBuilderProtocol {
+  @discardableResult
+  func using(format: String) -> Self {
+    formatter.dateFormat = format
+    return self
+  }
+  
+  func using(format: Date.Format) -> Self {
+    formatter.dateFormat = format.rawValue
+    return self
+  }
+  
+  @discardableResult
+  func using(localizedTemplate: String) -> Self {
+    formatter.setLocalizedDateFormatFromTemplate(localizedTemplate)
+    return self
+  }
+  
+  @discardableResult
+  func using(localizedTemplate: [Date.Components]) -> Self {
+    self.using(localizedTemplate: localizedTemplate.map(\.rawValue).joined(separator: ""))
+  }
+  
+  @discardableResult
+  func with(locale: Locale) -> Self {
+    formatter.locale = locale
+    return self
+  }
+  
+  @discardableResult
+  func adoptLocaleCalendar() -> Self  {
+    formatter.calendar = formatter.locale.calendar
+    return self
+  }
+  
+  @discardableResult
+  func adoptLocaleTimeZone() -> Self  {
+    formatter.timeZone = .init(identifier: formatter.locale.identifier)
+    return self
+  }
+}
+
+public class DateFormatterBuilder: SelfAdaptingDateFormatterBuilderProtocol {
+  public let formatter: DateFormatter = .init()
+}
+
+public class DateStringInput: DateFormatterBuilder {
+  let date: String
+  
+  public init(date: String) {
+    self.date = date
+  }
+  
+  public func parse() -> DateStringOutput {
+    return .init(
+      date: formatter.date(from: date)!
+    )
+  }
+}
+
+public class DateStringOutput: DateFormatterBuilder {
+  let date: Date
+  
+  public init(date: Date) {
+    self.date = date
+  }
+  
+  public func display() -> String {
+    return formatter.string(from: date)
+  }
+}
+
 #endif
+

@@ -26,7 +26,7 @@ public final class DiskStorage {
 }
 
 extension DiskStorage: WritableStorage {
-  public func remove<T>(type: T.Type, for key: StorageKey) throws where T : Cachable {
+  public func remove<T>(type: T.Type, for key: StorageKey) throws where T : Codable {
     do {
       try fileManager.removeItem(atPath: path.appendingPathComponent(key.key).absoluteString)
     } catch {
@@ -34,7 +34,7 @@ extension DiskStorage: WritableStorage {
     }
   }
   
-  public func save<T: Cachable>(value: T, for key: StorageKey) throws {
+  public func save<T: Codable>(value: T, for key: StorageKey) throws {
     let url = path.appendingPathComponent(key.key)
     do {
       try self.createFolders(in: url)
@@ -59,7 +59,7 @@ extension DiskStorage {
 }
 
 extension DiskStorage: ReadableStorage {
-  public func fetchValue<T: Cachable>(for key: StorageKey) -> T? {
+  public func fetchValue<T: Codable>(for key: StorageKey) -> T? {
     let url = path.appendingPathComponent(key.key)
     guard let data = fileManager.contents(atPath: url.path) else {
       return nil

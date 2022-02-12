@@ -10,8 +10,8 @@ import Lottie
 
 public struct LottieView: UIViewRepresentable {
   var animation: OAnimation
-  var loopMode: LottieLoopMode = .loop
-  var contentMode: UIView.ContentMode = .scaleAspectFit
+  var loopMode: LottieLoopMode
+  var contentMode: UIView.ContentMode
   
   /// Acts like callbacks at certain time in case some handling needs to be made during a certain time
   let animationFramesHandlers: [AnimationHandler]

@@ -31,13 +31,7 @@ public extension Endpoint {
     /// Base URL for calling endpoints which is configurable according to Build
     /// Configurations
     var baseURL: String {
-        #if DEBUG
-            return "https://api.dev.RS.tech/m/"
-        #elseif STAGING
-            return "https://api.staging.RS.tech/m/"
-        #elseif RELEASE
-            return "https://api.RS.tech/m/"
-        #endif
+        return "https://api.dev.RS.tech/m/"
     }
 
     var headers: HTTPHeaders {

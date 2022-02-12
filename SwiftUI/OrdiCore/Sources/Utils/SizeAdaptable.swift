@@ -226,6 +226,12 @@ extension Double: SizeRangeAdaptable {
   }
 }
 
+extension Double: SizeRatioAdaptable {
+  public func adaptRatio() -> Double {
+    self * DeviceHeight(size: UIScreen.main.bounds.height).multiplier
+  }
+}
+
 extension HorizontalAlignment: SizeRangeAdaptable {
   public func getSelf() -> HorizontalAlignment {
     self

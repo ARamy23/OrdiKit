@@ -9,20 +9,12 @@
 import Foundation
 import Entity
 
-public enum StorageKey {
-  case daily(String)
-  
-  var key: String {
-    switch self {
-    case let .daily(report):
-      return "daily-\(report)"
+public struct StorageKey {
+    public let key: String
+    public let suitableStorage: CacheManager.SupportedStorage
+    
+    public init(key: String, suitableStorage: CacheManager.SupportedStorage) {
+        self.key = key
+        self.suitableStorage = suitableStorage
     }
-  }
-  
-  var suitableStorage: CacheManager.SupportedStorage {
-    switch self {
-    case .daily:
-      return .userDefaults
-    }
-  }
 }
