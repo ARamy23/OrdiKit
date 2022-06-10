@@ -24,3 +24,7 @@ public protocol NetworkProtocol {
     func call<T: Codable, U: Endpoint>(api: U, model: T.Type) -> RSResponse<T>
     func upload<T: Codable, U: Endpoint>(api: U, model: T.Type) -> RSResponseWithProgress<T>
 }
+
+public protocol AwaitableNetworkProtocol {
+    func call<T: Codable>(api: some Endpoint, model: T.Type) async throws -> T
+}

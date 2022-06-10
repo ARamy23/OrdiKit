@@ -145,6 +145,7 @@ public struct OErrorParser {
         }
     }
 
+    // TODO: - [Future] Specific to Backend Alignment
     func parse(_ data: Data) -> OError {
         .somethingWentWrong
     }
@@ -179,5 +180,32 @@ extension Business.HTTPHeaders {
         .init(map { key, value in
             HTTPHeader(name: key, value: value)
         })
+    }
+}
+
+extension AlamofireManager: AwaitableNetworkProtocol {
+    public func call<T: Codable>(api: some Endpoint, model: T.Type) async throws -> T {
+        return try await withCheckedThrowingContinuation { continuation in
+            session.request(
+                api.baseURL + api.path,
+                method: api.method.toAlamofireFriendly(),
+                parameters: api.parameters,
+                encoding: api.encoding.toAlamofireFriendly(),
+                headers: api.headers.toAlamofireFriendly()
+            ).responseData { response in
+                switch response.result {
+                case let .success(data):
+                    if let model = SuccessParser().parse(data, expectedType: model) {
+                        continuation.resume(returning: model)
+                    } else if let error = OErrorParser().parse(data) {
+                        continuation.resume(throwing: error)
+                    } else {
+                        continuation.resume(throwing: OError.somethingWentWrong)
+                    }
+                case let .failure(error):
+                    continuation.resume(throwing: OErrorParser().parse(error))
+                }
+            }
+        }
     }
 }
