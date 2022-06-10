@@ -5,7 +5,7 @@
 //  Created by Ahmed Ramy on 13/09/2021.
 //
 
-public struct OError: Error, Codable {
+public struct OError: Error, Codable, Equatable {
   public var text: String
   public var loggable: Bool = true
   public var presentable: Bool = true

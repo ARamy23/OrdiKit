@@ -59,3 +59,9 @@ public extension String {
       .trimmingCharacters(in: .whitespacesAndNewlines)
   }
 }
+
+public extension Int {
+    func format(as formattingStyle: NumberFormatter.Style) -> String {
+        NumberFormatter().then { $0.numberStyle = formattingStyle }.string(from: NSNumber(value: self)) ?? "..."
+    }
+}

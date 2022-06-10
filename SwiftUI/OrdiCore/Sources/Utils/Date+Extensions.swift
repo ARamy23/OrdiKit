@@ -54,7 +54,7 @@ public extension Date {
   /// SwifterSwift: User’s current calendar.
   var calendar: Calendar {
     // Workaround to segfault on corelibs foundation https://bugs.swift.org/browse/SR-10147
-    return Calendar(identifier: .islamic)
+    return Calendar(identifier: .gregorian)
   }
   
   /// SwifterSwift: Era.
@@ -1047,6 +1047,26 @@ public extension Date {
   }
 }
 
+public extension Date {
+    var currentWeek: [Date] {
+      ((-4)...(-1)).map { self.adding(.day, value: $0) }
+      .appending(self)
+      .appending(elements: ((1)...(4)).map { self.adding(.day, value: $0) })
+    }
+    
+    var nextWeek: [Date] {
+        (0...6).map {
+            self.adding(.day, value: $0)
+        }
+    }
+    
+    var previousWeek: [Date] {
+        (0...6).map {
+            self.adding(.day, value: -$0)
+        }
+    }
+}
+
 public extension DateFormatter {
   convenience init(dateFormat: String, calendar: Calendar) {
     self.init()
@@ -1076,6 +1096,8 @@ public extension Date {
     case ddMMyyyyHHmm = "dd MMMM yyyy - hh:mm"
     /// 17 September 2020 - 09:41 AM
     case ddMMyyyyHHmma = "dd MMMM yyyy - hh:mm a"
+    /// 09:41 or 18:41
+    case hhmm = "hh:mm"
     /// 09:59 PM
     case hhmmA = "hh:mm a"
     /// 9:59 PM
@@ -1230,7 +1252,7 @@ public class DateStringInput: DateFormatterBuilder {
 }
 
 public class DateStringOutput: DateFormatterBuilder {
-  let date: Date
+  public let date: Date
   
   public init(date: Date) {
     self.date = date

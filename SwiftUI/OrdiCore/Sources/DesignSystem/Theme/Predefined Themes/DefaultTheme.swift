@@ -23,28 +23,17 @@ public struct DefaultTheme: Theme {
   public var largeShadow: ARShadow = ARShadow(color: .black.opacity(0.09), radius: 72, position: .zero)
   public var mediumShadow: ARShadow = ARShadow(color: .black.opacity(0.09), radius: 32, position: .zero)
   public var smallShadow: ARShadow = ARShadow(color: .black.opacity(0.09), radius: 16, position: .zero)
-  
-  
-  public func setupFont() -> FontManager {
-    FontBlaster.blast(bundle: .module)
-    guard let url = Bundle.module.url(forResource: "fonts", withExtension: "json") else { fatalError() }
-    do {
-      let data = try Data(contentsOf: url)
-      let configs = try JSONDecoder().decode(ConfigFonts.self, from: data)
-      
-      return FontManager(
-        configuration: FontManager.Configuration(
-          fontsLocale: .init(
-            language: .init(
-              Bundle.main.preferredLocalizations.first ?? "en"
-            )
-          ),
-          fontsType: configs.defaultConfigurations.sdkFriendlyType(),
-          availableFonts: configs.fonts.map { $0.toSDKFont() }
-        )
-      )
-    } catch {
-      fatalError(error.localizedDescription)
-    }
-  }
+}
+
+public struct PackageDefaultTheme: Theme {
+  public var primary: BrandColor = PrimaryPalette(.designSystemBundle)
+  public var secondary: BrandColor = SecondaryPalette(.designSystemBundle)
+  public var monochromatic: MonochromaticColor = MonochromaticPalette(.designSystemBundle)
+  public var transparency: Transparency = TransparencyPalette()
+  public var success: BrandColor = SuccessPalette(.designSystemBundle)
+  public var danger: BrandColor = DangerPalette(.designSystemBundle)
+  public var warning: BrandColor = WarningPalette(.designSystemBundle)
+  public var largeShadow: ARShadow = ARShadow(color: .black.opacity(0.09), radius: 72, position: .zero)
+  public var mediumShadow: ARShadow = ARShadow(color: .black.opacity(0.09), radius: 32, position: .zero)
+  public var smallShadow: ARShadow = ARShadow(color: .black.opacity(0.09), radius: 16, position: .zero)
 }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Lottie
+import UIKit
 
 public struct LottieView: UIViewRepresentable {
   var animation: OAnimation

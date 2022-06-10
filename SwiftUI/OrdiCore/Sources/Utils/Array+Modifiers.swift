@@ -39,3 +39,22 @@ public extension Array {
         return current
     }
 }
+
+extension Sequence {
+    func sorted<T: Comparable>(by keyPath: KeyPath<Element, T>) -> [Element] {
+        return sorted { a, b in
+            return a[keyPath: keyPath] < b[keyPath: keyPath]
+        }
+    }
+}
+
+public protocol Changeable {}
+public extension Changeable {
+    func changing(_ change: (inout Self) -> Void) -> Self {
+        var a = self
+        change(&a)
+        return a
+    }
+}
+
+extension Array: Changeable where Element: Changeable {}

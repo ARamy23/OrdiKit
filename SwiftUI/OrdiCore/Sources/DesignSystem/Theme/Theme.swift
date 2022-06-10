@@ -11,14 +11,10 @@
 
 import SwiftUI
 
-public protocol Theme: Colorable, FontCustomizable, Shadowable { }
+public protocol Theme: Colorable, Shadowable { }
 
 public final class ThemeManager {
-  public var selectedTheme: Theme = DefaultTheme()
+  public var selectedTheme: Theme = PackageDefaultTheme()
   public var supportedThemes: [Theme] = [DefaultTheme()]
   public static var shared: ThemeManager = .init()
-  
-  public func setup() {
-    FontManager.shared = selectedTheme.setupFont()
-  }
 }
