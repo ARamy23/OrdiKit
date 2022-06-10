@@ -1,5 +1,5 @@
 # OrdiKit
-OrdiKit is an SDK that aims to automating some tedious tasks by reusing already built solutions for it. 
+> OrdiKit is an SDK that aims to automating some tedious tasks by reusing already built solutions for it. 
 
 ## The Goal?
 OrdiKit is mostly targeted at... 
